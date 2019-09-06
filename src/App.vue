@@ -69,6 +69,7 @@ export default {
         // console.log("submit");
       }
     });
+    this.resize_ev();
   },
   beforeDestroy: function() {
     window.removeEventListener("resize", this.handleWindowResize);
@@ -78,8 +79,11 @@ export default {
   },
   methods: {
     handleWindowResize(event) {
+this.resize_ev();
+    },
+    resize_ev(eent){
       // debugger;
-      // console.log("resize");
+      console.log("resize");
       // console.log(this.maxh);
       // var vueOBJ=this;
       // this.maxh=0;
