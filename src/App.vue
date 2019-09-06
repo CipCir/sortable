@@ -40,7 +40,7 @@ export default {
     };
   },
   created() {
-    $(".question-controls-container").hide();
+    // $(".question-controls-container").hide();
     var vueObj = this;
     $(".mrGridCategoryText").each(function(indx) {
       vueObj.answers.push($(this).text());
@@ -49,6 +49,12 @@ export default {
     $(document).ready(function() {
       vueObj.add_vals();
     });
+    var gigi='x';
+    function everythingReady(){
+      // debugger;
+      vueObj.add_vals();
+      $('body').trigger('fakeReady');
+      };
     $(".mrNext").on("click", function(e) {
       vueObj.attempts++;
       if (vueObj.attempts == 1) {
@@ -87,6 +93,7 @@ export default {
       this.maxh = maximum;
     },
     add_vals() {
+      //  debugger;
       var vueObj = this;
       $(".mrGridCategoryText").each(function(indx) {
         $(".mrEdit")
