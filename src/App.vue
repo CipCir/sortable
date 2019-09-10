@@ -11,16 +11,23 @@
         <div
           @click="moveAnsw(true,indx)"
           class="srtBtn left"
-          v-bind:class="{ first_last: indx==0 }"
+          v-bind:class="{ first_last: (indx==0)||(indx==finalpos.length-1) }"
         >&#8593;</div>
         <div class="answer">{{answers[finInd]}}</div>
         <div
           @click="moveAnsw(false,indx)"
           class="srtBtn right"
-          v-bind:class="{ first_last: indx==finalpos.length-1 }"
+          v-bind:class="{ first_last: (indx==finalpos.length-2||indx==finalpos.length-1) }"
         >&#8595;</div>
       </div>
     </div>
+    <button
+      type="button"
+      id="fakeNext"
+      class="mrNext"
+      @click="next_click()"
+      v-html="dimObj.text_next"
+    ></button>
   </div>
 </template> 
 
@@ -36,39 +43,18 @@ export default {
       maxh: 40,
       move_first: -1,
       move_second: -1,
-      animation_delay: 500
+      animation_delay: 500,
+      warning_displayed: false
     };
   },
   created() {
-    // $(".question-controls-container").hide();
     var vueObj = this;
     $(".mrGridCategoryText").each(function(indx) {
       vueObj.answers.push($(this).text());
       vueObj.finalpos.push(indx);
     });
-    $(document).ready(function() {
-      vueObj.add_vals();
-    });
-    var gigi='x';
-    function everythingReady(){
-      // debugger;
-      vueObj.add_vals();
-      $('body').trigger('fakeReady');
-      };
-    $(".mrNext").on("click", function(e) {
-      vueObj.attempts++;
-      if (vueObj.attempts == 1) {
-        var errMsg = new OverlayMaster({
-          Message: vueObj.dimObj.error_text,
-          OkButton: vueObj.dimObj.error_button
-        });
-        errMsg.show();
-        e.preventDefault();
-        return false;
-      } else {
-        // console.log("submit");
-      }
-    });
+
+    this.add_vals();
     this.resize_ev();
   },
   beforeDestroy: function() {
@@ -78,12 +64,36 @@ export default {
     window.addEventListener("resize", this.handleWindowResize);
   },
   methods: {
-    handleWindowResize(event) {
-this.resize_ev();
+    next_click() {
+      let vueObj=this;
+        vueObj.attempts++;
+        // debugger;
+        if (vueObj.attempts == 1) {
+          var errMsg = new OverlayMaster({
+            Message: vueObj.dimObj.error_text,
+            OkButton: vueObj.dimObj.error_button
+          });
+          errMsg.show();
+          vueObj.warning_displayed=true;
+          vueObj.add_vals();
+        } else {
+          // console.log("submit");
+          if (vueObj.attempts == 2 && vueObj.warning_displayed) {
+            $('#_Q1_C2').prop('checked',true)
+          }else if (vueObj.attempts > 2 && vueObj.warning_displayed){
+            $('#_Q1_C1').prop('checked',true)
+          }else{
+            $('#_Q1_C0').prop('checked',true)
+          }
+          $('#mrForm').submit();
+        }
+      
     },
-    resize_ev(eent){
-      // debugger;
-      console.log("resize");
+    handleWindowResize(event) {
+      this.resize_ev();
+    },
+    resize_ev(event) {
+      //debugger;
       // console.log(this.maxh);
       // var vueOBJ=this;
       // this.maxh=0;
@@ -97,9 +107,11 @@ this.resize_ev();
       this.maxh = maximum;
     },
     add_vals() {
-      //  debugger;
+      // debugger;
+      // console.log("addvals");
       var vueObj = this;
       $(".mrGridCategoryText").each(function(indx) {
+        // console.log(indx)
         $(".mrEdit")
           .eq(indx * 2)
           .val(indx);
@@ -130,8 +142,14 @@ this.resize_ev();
       }, 2 * vueOBJ.animation_delay);
     },
     moveAnsw(isUpInList, currentPos) {
+      if (this.attempts == 0) this.add_vals();
       this.attempts++;
       if (isUpInList) {
+        // console.log('up att');
+        if (currentPos == this.finalpos.length-1){
+          // console.log('last clicked for up');
+          return false;
+        }
         if (currentPos > 0) {
           this.animate_switch(currentPos, currentPos - 1);
           var vueOBJ = this;
@@ -153,7 +171,11 @@ this.resize_ev();
           // console.log("cannot move up first elem");
         }
       } else {
-        // debugger
+        // console.log('down att');
+        if (currentPos == this.finalpos.length-2){
+          // console.log('before last clicked for down');
+          return false;
+        }
         var vueOBJ = this;
         if (currentPos < this.finalpos.length - 1) {
           this.animate_switch(currentPos, currentPos + 1);
@@ -179,7 +201,14 @@ this.resize_ev();
   }
 };
 </script>
-
+<style >
+#nav-controls .mrNext {
+  display: none !important;
+}
+.question-controls-container{
+  display: none !important;
+}
+</style>
 <style scoped>
 .answerRow {
   /* background: #aaa; */
@@ -250,15 +279,14 @@ this.resize_ev();
 .move_first {
   /* border-color: #0cb2b052;
   background: #0cb2b052; */
-    border-color: rgba(12, 178, 175, 0.5);
+  border-color: rgba(12, 178, 175, 0.5);
   background: rgba(12, 178, 175, 0.5);
 }
 .move_second {
-    /* border-color: #4b64ae52;
+  /* border-color: #4b64ae52;
   background: #4b64ae52; */
-    border-color: rgba(75, 100, 174, 0.5);
+  border-color: rgba(75, 100, 174, 0.5);
   background: rgba(75, 100, 174, 0.5);
-
 }
 .move_first,
 .move_second {
@@ -268,10 +296,16 @@ this.resize_ev();
   -o-transition: all 0.1s ease-in-out;
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
-  opacity:0.7;
-
-  /* background: #f5f5f5;  */
+  opacity: 0.7;
 }
+#fakeNext {
+  padding: 0.5em 0;
+  min-width: 100px;
+  width: 20%;
+  margin-top: 30px;
+}
+/* background: #f5f5f5;  */
+
 /* .move_first{
   border-color: red;
   background-color: white;
