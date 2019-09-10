@@ -79,11 +79,11 @@ export default {
         } else {
           // console.log("submit");
           if (vueObj.attempts == 2 && vueObj.warning_displayed) {
-            $('#_Q1_C2').prop('checked',true)
+            $('#_Q1_C2').prop('checked','checked')
           }else if (vueObj.attempts > 2 && vueObj.warning_displayed){
-            $('#_Q1_C1').prop('checked',true)
+            $('#_Q1_C1').prop('checked','checked')
           }else{
-            $('#_Q1_C0').prop('checked',true)
+            $('#_Q1_C0').prop('checked','checked')
           }
           $('#mrForm').submit();
         }
