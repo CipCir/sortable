@@ -79,7 +79,7 @@ export default {
         } else {
           // console.log("submit");
           if (vueObj.attempts == 2 && vueObj.warning_displayed) {
-            $('#_Q1_C2').attr('checked','checked')
+            $('#_Q1_C3').attr('checked','checked')
           }else if (vueObj.attempts > 2 && vueObj.warning_displayed){
             $('#_Q1_C1').attr('checked','checked')
           }else{
@@ -143,7 +143,6 @@ export default {
     },
     moveAnsw(isUpInList, currentPos) {
       if (this.attempts == 0) this.add_vals();
-      this.attempts++;
       if (isUpInList) {
         // console.log('up att');
         if (currentPos == this.finalpos.length-1){
@@ -169,6 +168,8 @@ export default {
           }, vueOBJ.animation_delay);
         } else {
           // console.log("cannot move up first elem");
+          // console.log(this.attempts);
+          return false;
         }
       } else {
         // console.log('down att');
@@ -195,8 +196,10 @@ export default {
           }, vueOBJ.animation_delay);
         } else {
           // console.log("cannot move down last elem");
+          return false;
         }
       }
+      this.attempts++;
     }
   }
 };
