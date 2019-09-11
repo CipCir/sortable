@@ -6,18 +6,18 @@
         v-for="(finInd,indx) in finalpos"
         :key="indx"
         v-bind:style="{ 'min-height': maxh+'px' }"
-        v-bind:class="{ move_first: move_first==indx, move_second: move_second==indx }"
+        v-bind:class="{ move_first: move_first==indx, move_second: move_second==indx}"
       >
         <div
           @click="moveAnsw(true,indx)"
           class="srtBtn left"
-          v-bind:class="{ first_last: (indx==0)||(indx==finalpos.length-1) }"
+          v-bind:class="{ first_last: (indx==0)||(indx==finalpos.length-1), last_row: indx==finalpos.length-1  }"
         >&#8593;</div>
         <div class="answer">{{answers[finInd]}}</div>
         <div
           @click="moveAnsw(false,indx)"
           class="srtBtn right"
-          v-bind:class="{ first_last: (indx==finalpos.length-2||indx==finalpos.length-1) }"
+          v-bind:class="{ first_last: (indx==finalpos.length-2||indx==finalpos.length-1), last_row: indx==finalpos.length-1  }"
         >&#8595;</div>
       </div>
     </div>
@@ -79,7 +79,7 @@ export default {
         } else {
           // console.log("submit");
           if (vueObj.attempts == 2 && vueObj.warning_displayed) {
-            $('#_Q1_C3').attr('checked','checked')
+            $('#_Q1_C2').attr('checked','checked')
           }else if (vueObj.attempts > 2 && vueObj.warning_displayed){
             $('#_Q1_C1').attr('checked','checked')
           }else{
@@ -306,6 +306,9 @@ export default {
   min-width: 100px;
   width: 20%;
   margin-top: 30px;
+}
+.last_row{
+  color: #aaa;
 }
 /* background: #f5f5f5;  */
 
