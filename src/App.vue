@@ -6,7 +6,7 @@
         v-for="(finInd,indx) in finalpos"
         :key="indx"
         v-bind:style="{ 'min-height': maxh+'px' }"
-        v-bind:class="{ move_first: move_first==indx, move_second: move_second==indx}"
+        v-bind:class="{ move_first: move_first==indx, move_second: move_second==indx, last_ans: indx==finalpos.length-1 }"
       >
         <div
           @click="moveAnsw(true,indx)"
@@ -308,7 +308,12 @@ export default {
   margin-top: 30px;
 }
 .last_row{
-  color: #aaa;
+  color: #49bfbc;
+      background-color: #49bfbc;   
+}
+.last_ans{
+font-weight: bolder;
+background-color: #49bfbc;  
 }
 /* background: #f5f5f5;  */
 
